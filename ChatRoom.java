@@ -17,6 +17,6 @@ public class ChatRoom {
 
 class UserAlreadyExistsException extends Exception {
     UserAlreadyExistsException(User newUser, ChatRoom room) {
-        super("User: " + newUser.displayName + " already exists in ChatRoom " + room.roomName);
+        super("User: " + newUser.displayname + " already exists in ChatRoom " + room.roomName);
     }
 }
