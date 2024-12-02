@@ -1,18 +1,17 @@
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Message implements Serializable {
     private User sender;
-    private User reciver;
     private String content;
     private Date timestamp;
 
-    public Message(User sender, User reciver, String content, Date timestamp) {
+    public Message(User sender, String content) {
         this.sender = sender;
-        this.reciver = reciver;
         this.content = content;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
     }
 
     public String getFormattedTimestamp() {
@@ -22,6 +21,6 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "[" + getFormattedTimestamp() + "] " + sender + ": " + content;
+        return "[" + getFormattedTimestamp() + "] @|" + sender.color + " " + sender.displayname + ":|@ " + content;
     }
 }

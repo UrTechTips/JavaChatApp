@@ -34,7 +34,7 @@ public class Client {
                 return;
             }
 
-            System.out.println(ansi().eraseScreen() + "You are now logged in!");
+            System.out.println("You are now logged in!");
             System.out.println("Enter a message to send to the server (type 'exit' to quit):");
 
             Thread listener = new Thread(() -> {

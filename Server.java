@@ -1,3 +1,4 @@
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -28,7 +29,7 @@ public class Server {
         final Socket clientSocket;
         final PrintWriter out;
         final BufferedReader in;
-        String username;
+        User usr;
 
         public ClientHandler(Socket socket) throws IOException {
             this.clientSocket = socket;
@@ -58,7 +59,7 @@ public class Server {
                         String[] arr = message.substring(4).split(" ", 2);
                 
                         if (arr.length == 2) {
-                            String broadcastMessage = "[" + username + " whispers to you]: " + arr[1];
+                            String broadcastMessage = "@|white [" + usr.username + " whispers to you]|@: " + arr[1];
                             if (!privateMessage(arr[0], broadcastMessage)) {
                                 out.println("Invalid Username.");
                             }
@@ -68,9 +69,9 @@ public class Server {
                     } else if (message.startsWith("/pm")) {
                         out.println("Invalid /pm format. Use: /pm <username> <message>");
                     } else {
-                        String broadcastMessage = "[] @|red " + username + "|@: " + message;
-                        System.out.println("Broadcasting: " + broadcastMessage);
-                        broadcast(broadcastMessage);
+                        Message msg = new Message(usr, message);
+                        System.out.println("Broadcasting: " + msg.toString());
+                        broadcast(msg.toString());
                     }
                 }
                 
@@ -82,12 +83,14 @@ public class Server {
         }
 
         private void handleLogin() throws IOException {
-            username = in.readLine();
+            String username = in.readLine();
             String password = in.readLine();
 
             try {
-                if (Users.login(username, password)) {
+                if (Authentication.login(username, password)) {
                     out.println("SUCCESS");
+                    User user = new User(username, getRandomColor());
+                    this.usr = user;
                     System.out.println(username + " logged in successfully!");
                 } else {
                     out.println("FAILURE: Invalid Username or Password.");
@@ -100,13 +103,15 @@ public class Server {
         }
 
         private void handleAccountCreation() throws IOException {
-            username = in.readLine();
+            String username = in.readLine();
             String displayName = in.readLine();
             String password = in.readLine();
 
             try {
-                if (Users.createUser(username, displayName, password)) {
+                if (Authentication.createUser(username, displayName, password)) {
                     out.println("ACCOUNT_CREATED");
+                    User user = new User(username, displayName, getRandomColor());
+                    this.usr = user;
                     System.out.println("Account created for " + username);
                 } else {
                     out.println("FAILURE: Account creation failed. Username might already exist.");
@@ -121,7 +126,7 @@ public class Server {
         private void broadcast(String message) {
             for (ClientHandler client : clientHandlers) {
                 try {
-                    if (!client.username.equals(username)) {
+                    if (!client.usr.username.equals(usr.username)) {
                         client.out.println(message);
                     }
                 } catch (Exception e) {
@@ -132,11 +137,9 @@ public class Server {
         }
 
         private boolean privateMessage(String user, String message) {
-            System.out.println("Private Message to Username: " + user);
             for (ClientHandler client : clientHandlers) {
                 try {
-                    String usern = client.username;
-                    System.out.println("User: " + usern);
+                    String usern = client.usr.username;
                     if (usern.equals(user)) {
                         client.out.println(message);
                         return true;
@@ -147,6 +150,14 @@ public class Server {
                 }
             }
             return false;
+        }
+
+        private String getRandomColor() {
+            String[] colors = {"Red","Green","Yellow","Blue","Magenta","Cyan","White"};
+            Random random = new Random();
+            int randomIndex = random.nextInt(colors.length);
+            String randomColor = colors[randomIndex];
+            return randomColor;
         }
 
         private void cleanup() {

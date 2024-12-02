@@ -1,9 +1,10 @@
+
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public class Users {
+public class Authentication {
     public static boolean createUser(String userName, String displayName, String password)  throws NoSuchAlgorithmException{
         String salt = PasswordUtils.getSalt();
         String encryptedPassword = PasswordUtils.hashPassword(password, salt);
