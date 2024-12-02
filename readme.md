@@ -31,7 +31,7 @@ project-folder/
 2. **Compile the Java Files:** Ensure that the JAR files are in the Lib/ directory. Use the following command to compile the source code:
 
     ```bash
-    javac -cp Server.java
+    javac Server.java
     javac -cp ".;lib\jansi-2.4.0.jar" Client.java
     ```
 

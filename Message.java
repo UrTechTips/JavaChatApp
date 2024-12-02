@@ -17,10 +17,14 @@ public class Message implements Serializable {
     public String getFormattedTimestamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         return sdf.format(timestamp);
+    } 
+
+    public String printString() {
+        return "[" + getFormattedTimestamp() + "] @|" + sender.color + " " + sender.displayname + ":|@ " + content;
     }
 
     @Override
     public String toString() {
-        return "[" + getFormattedTimestamp() + "] @|" + sender.color + " " + sender.displayname + ":|@ " + content;
+        return "[" + getFormattedTimestamp() + "] " + sender.displayname + ": " + content;
     }
 }
